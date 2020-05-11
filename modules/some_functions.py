@@ -5,25 +5,25 @@ import seaborn as sns
 sns.set(style="darkgrid")
 
 def sample_indices(df, test_pct = 0.15, replace = False, seed = 1):
-""" Toma una muestra de índices de la matriz 'df'
-"""   
+    """ Toma una muestra de índices de la matriz 'df'
+    """   
     if seed != None:
         np.random.seed(seed)
     return np.random.choice(range(0, len(df)), round(test_pct*len(df)), replace=replace)
 
-def plot_cat_dist(df, cat, figsize = (15,3), n=25, title = None):
+def plot_cat_dist(df, cat, figsize = (15,3), n=25, title = None, palette=("Blues_d")):
     """ Plotea la variable categorica 'cat' de las primeras 'n' líneas de la matriz 'df'
     """
     category = df.groupby([cat], as_index=False).size().reset_index(name='count')
     category = category.sort_values(by='count',ascending=False).reset_index(drop=True)
     plt.figure(figsize = figsize)
-    ax = sns.barplot(x=category.head(n)[cat], y=category.head(n)['count'])
+    ax = sns.barplot(x=category.head(n)[cat], y=category.head(n)['count'], palette=palette)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
     if title == None:
         title == cat
     plt.title(title)
     
-def plot_cont_dist(df, var, figsize = (15,3), bins=25, low = None, high = None, title = None, kde = False, rug = False):
+def plot_cont_dist(df, var, figsize = (15,3), bins=25, low = None, high = None, title = None, kde = False, rug = False, color = 'b'):
     """ Plotea la variable continua 'var' de la matriz 'df'
     """
     if low==None : low=min(df[var])
@@ -31,7 +31,7 @@ def plot_cont_dist(df, var, figsize = (15,3), bins=25, low = None, high = None, 
     plt.figure(figsize = figsize)
     sns.distplot(df[(df[var].notna())&
                  (df[var]>low)&(df[var]<high)][var]
-                 , kde=kde, rug=rug, bins = bins)
+                 , kde=kde, rug=rug, bins = bins, color = color)
     plt.ticklabel_format(style='plain', axis='x')
     plt.ticklabel_format(style='plain', axis='y')
     if title == None:
